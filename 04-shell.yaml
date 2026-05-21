@@ -1,1 +1,14 @@
+- name: Demo on using shell 
+  hosts: all         
+  tasks: 
+    - name: Demo on using shell
+      ansible.builtin.shell: uptime 
+      register: OUT
 
+    - name: Printing the shell output
+      ansible.builtin.debug:  
+        msg: "{{ OUT }}"
+
+    - name: Printing defined output
+      ansible.builtin.debug:
+        msg: "{{ OUT.stdout }} and the exist code is {{ OUT.rc }}"
