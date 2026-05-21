@@ -1,1 +1,22 @@
+- name: Demo on package & privilege escalation
+  hosts: all            
+  become: true # All tasks in this play will run as root
+  tasks: 
+    - name: Installs nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present 
 
+    - name: Identifiying the user account
+      ansible.builtin.shell: whoami 
+      register: OUT
+
+    - name: Who executing the script is
+      ansible.builtin.debug:  
+        msg: "{{ OUT.stdout }}"
+
+    - name: Starting nginx service
+      ansible.builtin.service:
+        name: nginx
+        enabled: yes
+        state: started
