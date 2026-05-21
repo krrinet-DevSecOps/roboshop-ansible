@@ -1,1 +1,7 @@
-
+- name: Demo on facts 
+  hosts: all
+  gather_facts: no             # This disable the collection of ansible facts               
+  tasks: 
+    - name: Printing the OS Dist
+      ansible.builtin.debug:
+        msg: "OS Distro Is {{ ansible_distribution }} & the verison is {{ ansible_distribution_version }}"
