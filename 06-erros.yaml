@@ -1,1 +1,16 @@
+- name: Demo on errors 
+  hosts: all           
+  tasks: 
+    - name: Printing the first message
+      ansible.builtin.debug:
+        msg: "Hai World"
 
+    - name: Running a shell command
+      ansible.builtin.shell: ps -ef |grep java | grep -v grep 
+      register: OUT
+      ignore_errors: true
+
+    - name: Printing the second message
+      ansible.builtin.debug:
+        msg: "Hello World & the ouput of above command is {{ OUT }}"
+      
