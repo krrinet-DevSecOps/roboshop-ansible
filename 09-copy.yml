@@ -1,1 +1,7 @@
-
+- name: Demo on copying the file
+  hosts: all            
+  tasks: 
+    - name: Copying the file from source to destination
+      ansible.builtin.copy:
+        src: catalogue.service
+        dest: /home/ec2-user/
