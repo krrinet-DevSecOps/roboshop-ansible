@@ -1,1 +1,26 @@
+- name: Demo on vars 
+  hosts: all 
+  vars:                                     # Playlevel variables, which can be inherited by default by all the tasks of the play
+    URL: play.google.com                 
+  tasks: 
+    - name: Printing the variable
+      ansible.builtin.debug:
+        msg: "{{ URL }}"
 
+    - name: Printing the variable in between the sentense
+      ansible.builtin.debug:
+        msg: "Name of the var is {{ URL }}" 
+
+    - name: Printing local variable
+      vars:                                # Tasklelve variable, which is only valid for this task
+        URL: task.google.com
+      ansible.builtin.debug:
+        msg: "Name of the var is {{ URL }}"
+
+- name: Play 2 Demo On Vars - What will happen when you use a variable that's not defined and declared
+  hosts: all 
+  tasks: 
+    - name: Printing the variable
+      ansible.builtin.debug:
+        msg: "{{ URL }}"
+# As in the play 2 value of the URL is not declared and when attempted to use a variable that's not declared we will get an exception.
