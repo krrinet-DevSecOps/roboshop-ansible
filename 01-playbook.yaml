@@ -1,1 +1,17 @@
+- name: Name of the play1 
+  hosts: dev
+  tasks:  
+    - name: name of the task from play1
+      ansible.builtin.debug:
+        msg: We are learning ansible
 
+    - name: Task from play1
+      ansible.builtin.debug:
+        msg: We are learning ansible in task2 of play1
+
+- name: play 2
+  hosts: all
+  tasks:  
+    - name: Task1 from play2
+      ansible.builtin.debug:
+        msg: We are learning ansible from play2 of task1
