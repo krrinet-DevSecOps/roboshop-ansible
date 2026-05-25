@@ -1,0 +1,15 @@
+- name: Configuring the {{ component }} repo 
+  ansible.builtin.copy:
+    src: "{{ component }}.repo"
+    dest: /etc/yum.repos.d/{{ component }}.repo
+
+- name: Installing "{{ packageName }}" 
+  ansible.builtin.package:
+    name: "{{ packageName }}" 
+    state: present
+
+- name: Starting "{{ packageName }}" service
+  ansible.builtin.service:
+    name: mongod
+    enabled: yes
+    state: restarted
