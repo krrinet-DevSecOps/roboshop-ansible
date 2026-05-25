@@ -1,0 +1,7 @@
+- name: Demo on template module
+  hosts: all            
+  tasks: 
+    - name: Copying the file from source to destination
+      ansible.builtin.template:
+        src: catalogue.service
+        dest: /home/ec2-user/
