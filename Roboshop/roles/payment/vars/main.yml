@@ -1,0 +1,9 @@
+component: "payment"
+packages: 
+  - python3
+  - gcc 
+  - python3-devel
+appUser: "roboshop"
+appDirectory: "/app"
+url: "https://stan-robotshop.s3.amazonaws.com/payment-v3.zip"
+secrets: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=kv/data/rabbitmq-{{ env }} token={{ token }} url=http://vault-tools.krrinet.online:8200 validate_certs=false') }}"
