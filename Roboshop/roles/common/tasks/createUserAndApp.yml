@@ -1,0 +1,20 @@
+- name: creating appuser for {{ component }} service
+  ansible.builtin.user:
+    name: "{{ appUser }}"
+    create_home: yes
+
+- name: Cleanup of the {{ appDirectory }} content
+  ansible.builtin.file:
+    path: "{{ appDirectory }}"
+    state: absent
+
+- name: Creating app directory for {{ component }} service
+  ansible.builtin.file:
+    path: "{{ appDirectory }}"
+    state: directory
+
+- name: Download and extracting the {{ component }} service
+  ansible.builtin.unarchive:
+    src: "{{ url }}"
+    dest: "{{ appDirectory }}"
+    remote_src: yes           # If yes, download from the URL mentioned in src machine, if no, copy from local machine to remote machine
