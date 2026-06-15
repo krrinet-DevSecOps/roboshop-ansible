@@ -1,0 +1,36 @@
+- name: Disable existing {{ packageName }} module stream for {{ component }} server
+  ansible.builtin.shell: dnf module disable {{ packageName }} -y
+
+- name: Enable {{ packageName }} module stream {{ packageVersion }}
+  ansible.builtin.shell: dnf module enable {{ packageName }}:{{ packageVersion }} -y
+
+- name: Installing "{{ packageName }}" 
+  ansible.builtin.package:
+    name: "{{ packageName }}" 
+    state: present
+
+- name: Creating user and configuring the app directory for {{ component }} service
+  ansible.builtin.include_role:
+    name: common                 
+    tasks_from: createUserAndApp           # name of the task file    
+
+- name: Generating artifact dependencies for {{ component }} service
+  community.general.npm:
+    path: "{{ appDirectory }}" 
+
+# This task is required only for catalogue service, as it is the only service which has mongodb schema to be injected. Other services are not having any schema to be injected. So, this task is not required for other services.
+- name: Injecting the mongodb schema for {{ component }} service
+  ansible.builtin.include_role:
+    name: common                 
+    tasks_from: injectMongoSchema          # name of the task file
+  when: setup_mongodb_schema is defined
+
+- name: Configuring service
+  ansible.builtin.include_role:
+    name: common                 
+    tasks_from: configureSvc           # name of the task file    
+
+- name: Configuring the hostName
+  ansible.builtin.include_role:
+    name: common                 
+    tasks_from: setHostname      
