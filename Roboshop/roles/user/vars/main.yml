@@ -1,0 +1,6 @@
+component: "user"
+packageName: "nodejs"
+packageVersion: 20
+appUser: "roboshop"
+appDirectory: "/app"
+url: "https://stan-robotshop.s3.amazonaws.com/user-v3.zip"
