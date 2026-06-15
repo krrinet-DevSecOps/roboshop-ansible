@@ -1,0 +1,12 @@
+- name: Configuring the mongodb repo 
+  ansible.builtin.copy:
+    src: mongodb.repo
+    dest: /etc/yum.repos.d/mongodb.repo
+
+- name: Installing mongodbShell
+  ansible.builtin.dnf:
+    name: mongodb-mongosh
+    state: present
+
+- name: Injecting Mongodb Schema for {{ component }} service
+  ansible.builtin.shell: "mongosh --host mongodb-{{ env }}.krrinet.online < /app/db/master-data.js"  
