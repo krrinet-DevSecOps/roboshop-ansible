@@ -1,0 +1,4 @@
+- name: Configuring {{ component }}
+  ansible.builtin.include_role:
+    name: common                 # name of the role
+    tasks_from: nodejs           # name of the task file
