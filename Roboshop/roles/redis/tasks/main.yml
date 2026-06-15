@@ -1,0 +1,31 @@
+- name: Disable existing {{ packageName }} module stream for {{ component }} server
+  ansible.builtin.shell: dnf module disable {{ packageName }} -y
+
+- name: Enable {{ packageName }} module stream {{ packageVersion }}
+  ansible.builtin.shell: dnf module enable {{ packageName }}:{{ packageVersion }} -y
+
+- name: Installing "{{ packageName }}" 
+  ansible.builtin.package:
+    name: "{{ packageName }}" 
+    state: present
+
+- name: Enabling the visibility of "{{ packageName }}" conf
+  ansible.builtin.replace:
+    path: "/etc/{{ component }}/{{ component }}.conf"
+    regexp: '127.0.0.1'
+    replace: '0.0.0.0'
+
+- name: Disbaling the protected mode of "{{ packageName }}" 
+  ansible.builtin.replace:
+    path: "/etc/{{ component }}/{{ component }}.conf"
+    regexp: 'protected-mode yes'
+    replace: 'protected-mode no'
+
+- name: Starting "{{ packageName }}" service
+  ansible.builtin.service:
+    name: "{{ component }}"
+    enabled: yes
+    state: restarted
+
+- name: Configuring the hostName
+  ansible.builtin.shell: set-hostname {{ component }}-{{ env }}
