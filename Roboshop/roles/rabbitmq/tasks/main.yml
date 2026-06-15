@@ -1,0 +1,28 @@
+- name: Configuring the {{ component }} repo 
+  ansible.builtin.copy:
+    src: "{{ component }}.repo"
+    dest: /etc/yum.repos.d/{{ component }}.repo
+
+- name: Installing "{{ packageName }}" 
+  ansible.builtin.package:
+    name: "{{ packageName }}" 
+    state: present
+
+- name: Starting "{{ packageName }}" service
+  ansible.builtin.service:
+    name: "{{ packageName }}"
+    enabled: yes
+    state: restarted
+
+- name: Creating {{ appUser }} for {{ component }} service
+  community.rabbitmq.rabbitmq_user:
+    user: "{{ appUser }}"
+    password: "{{ secrets.rabbitmq_pass }}"
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present
+
+- name: Configuring the hostName
+  ansible.builtin.shell: set-hostname {{ component }}-{{ env }}
