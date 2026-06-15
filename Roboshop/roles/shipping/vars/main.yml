@@ -1,0 +1,11 @@
+component: "shipping"
+packageName: "maven"
+appUser: "roboshop"
+appDirectory: "/app"
+url: "https://stan-robotshop.s3.amazonaws.com/shipping-v3.zip"
+schema:
+  - "schema.sql"
+  - "app-user.sql"
+  - "master-data.sql"
+setup_mysql_schema: true
+secrets: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=kv/data/mysql-{{ env }} token={{ token }} url=http://vault-tools.krrinet.online:8200 validate_certs=false') }}"
