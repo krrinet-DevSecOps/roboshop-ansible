@@ -1,0 +1,5 @@
+- name: Configuring the roboshop component with pull mechanism
+  become: true
+  hosts: localhost
+  roles:
+    - "{{ component }}"
