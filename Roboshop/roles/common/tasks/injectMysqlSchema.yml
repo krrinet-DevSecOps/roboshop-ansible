@@ -1,0 +1,8 @@
+- name: Installing mysqlShell
+  ansible.builtin.package:
+    name: mysql
+    state: present
+
+- name: Injecting Schema for {{ component }} service
+  loop: "{{ schema }}"
+  ansible.builtin.shell: mysql -h mysql-{{ env }}.krrinet.online -uroot -p{{ secrets.mysql_pass }} < /app/db/{{ item }}
