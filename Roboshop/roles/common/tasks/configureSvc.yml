@@ -1,0 +1,11 @@
+- name: Configuring the {{ component }} service
+  ansible.builtin.template:
+    src: "{{ component }}.service"
+    dest: "/etc/systemd/system/{{ component }}.service"
+
+- name: Starting {{ component }} service
+  ansible.builtin.service:
+    name: "{{ component }}"
+    enabled: yes
+    state: restarted
+    daemon_reload: yes
