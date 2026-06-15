@@ -1,3 +1,5 @@
 url: "https://stan-robotshop.s3.amazonaws.com/frontend-v3.zip"
 packageName: "nginx"
 packageVersion: "1.24"
+component: "frontend"
+secrets: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=kv/data/rabbitmq-{{ env }} token={{ token }} url=http://vault-tools.krrinet.online:8200 validate_certs=false') }}"
