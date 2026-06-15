@@ -1,4 +1,3 @@
-# roboshop-ansible
 ### Executive Summary — roboshop-ansible
 
 The `roboshop-ansible` repository is intended to serve as a centralized platform for learning Ansible basics and implementing Configuration Management for all Roboshop components within the `roboshop/` directory.
@@ -540,15 +539,106 @@ This is one of the reasons why teams often prefer tools like:
 * Azure Key Vault
 * Google Secret Manager
 
-Writing playbooks is not a greate way and there is no relation on which file is been used by which file. You really don't know which variable file is been used by which plabook.
-
-The best hardedned approach to handle playbooks is using something called "Ansible Roles"
-
-This ansible roles offers the standard way of organiating the playbooks, associated variable files, associated files and all. With Roles, you can write once and use it multiple times and which can help in keeping the code DRY!!!!
-
-Here is the documented way of using Ansible Roles and names are strctly enforce, tasks/ should be in the tasks folder under main.yml to execute by default.
-
-How to run a specific role ? "ansible-playbook -i inv-dev -e ansible_user=ec2-user -e ansible_password=DevOps321 roboshop.yml" and the role to run a playbook is described in the file under the section
-
-roles:
 ```
+```
+
+
+## Ansible Roles
+
+Writing playbooks on their own can be difficult to manage, and it is often unclear which files are used by which playbook.
+You may not know which variable file is used by a given playbook.
+
+The best hardened approach to handle playbooks is using Ansible Roles.
+
+Ansible roles provide a standard way of organizing playbooks, associated variable files, templates, and other files.
+With roles, you can write once and reuse multiple times, which helps keep the code DRY.
+
+Here is the documented way of using Ansible Roles. Names are strictly enforced, and `tasks/` should contain `main.yml` to execute by default.
+
+How to run a specific role?
+
+```bash
+ansible-playbook -i inv-dev -e ansible_user=ec2-user -e ansible_password=DevOps321 roboshop.yml
+```
+
+The roles to run are described in the playbook under the `roles:` section.
+
+Example role structure:
+
+```text
+roles/
+    common/               # this hierarchy represents a "role"
+        tasks/            #
+            main.yml      #  <-- tasks file can include smaller files if warranted
+        handlers/         #
+            main.yml      #  <-- handlers file
+        templates/        #  <-- files for use with the template resource
+            ntp.conf.j2   #  <------- templates end in .j2
+        files/            #
+            bar.txt       #  <-- files for use with the copy resource
+            foo.sh        #  <-- script files for use with the script resource
+        vars/             #
+            main.yml      #  <-- variables associated with this role
+        defaults/         #
+            main.yml      #  <-- default lower-priority variables for this role
+        meta/             #
+            main.yml      #  <-- role dependencies
+        library/          # roles can also include custom modules
+        module_utils/     # roles can also include custom module_utils
+        lookup_plugins/   # or other types of plugins, like lookup in this case
+```
+
+> We completed the project in a hardwired way and it did not meet the NFRs:
+> 1) Code was repeated, so the code was WET.
+>    I want to identify common patterns and make the code DRY by writing a role with shared patterns and calling it.
+> 2) Re-run should work, and it does.
+> 3) Infrastructure was created manually and I want that automated (we do that with Terraform).
+> 4) We are running the Ansible playbook from the workstation; we want it to run from a UI (CI framework).
+
+> When calling a role, only the tasks in `main.yml` are executed.
+> Can we execute the tasks in `tasks/nodejs.yml` from a role `common`? Yes.
+> That is called including the role, which can be done as follows:
+
+```yaml
+- name: Run tasks/other.yml instead of main
+  ansible.builtin.include_role:
+    name: myrole
+    tasks_from: other
+```
+
+Dry status:
+- NodeJS components are 100% dry.
+- Java components are 100% dry.
+- Python components are 100% dry.
+
+> Next concepts are :
+  1) ansible-pull:
+       We can login to the server that needs ansible configuriaton management, we can direccly point the command to the playbook on git and run the playbook directly.
+
+       ansible-pull expects ansible to be installed on the servers you're running the command.
+
+       you don't need to maintain separate server to act as a ansible-node.
+
+  2) Role Dependency:
+        This ensures whenever we run a role-x and if it needs role-y to be executed first then it ensure that role-y to be run first.
+
+        Let's say for shipping component, mysql is dependent and if you run shipping without mysql , shipping wll fail.
+
+        We can create dependency  in the shipping statng mySql as dependeent role, whenever you run shipping mysql wll be executed first and that dependency s configured in the meta/main.yml
+
+
+How to run ansible-pull ?
+  To run ansible-pull., here are the instructions:
+    1) Log in to the server that needs Ansible Configuration Management
+    2) Ensure ansible is installed on the servre  ( If not install it )
+    3) Then run the ansible-pull using the below command, no need of auth or anything ( At this point of time, the only endPoint supported by ansible pull is from GIT )
+
+```
+ $ ansible-pull -U https://github.com/B60-CloudDevOps/roboshop-ansible.git roboshop/roboshop-pull.yml -e env=dev -e component=mongodb
+```
+
+What are the areas of improvements still ?
+  1) Infrastructure creation is still manual.
+  2) I want less toil ( Toil: Manual Actions )
+
+More Toil = More Manual Actions = More Mistakes = More Outages = Less reputation & revenus loss.
