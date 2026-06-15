@@ -3,3 +3,27 @@ frontend-dev.krrinet.online
 
 [mongodb]
 mongodb-dev.krrinet.online
+
+[catalogue]
+catalogue-dev.krrinet.online
+
+[redis]
+redis-dev.krrinet.online
+
+[user]
+user-dev.krrinet.online
+
+[cart]
+cart-dev.krrinet.online
+
+[mysql]
+mysql-dev.krrinet.online
+
+[shipping]
+shipping-dev.krrinet.online
+
+[rabbitmq]
+rabbitmq-dev.krrinet.online
+
+[payment]
+payment-dev.krrinet.online
