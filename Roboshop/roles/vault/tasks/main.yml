@@ -1,0 +1,25 @@
+- name: Configuring the vault repository
+  ansible.builtin.template:
+    src: vault.repo
+    dest: /etc/yum.repos.d/vault.repo
+
+- name: Installing vault
+  ansible.builtin.package:
+    name: "vault"
+    state: present
+
+- name: Configuring the vault configuration file
+  ansible.builtin.template:
+    src: vault.hcl
+    dest: /etc/vault.d/vault.hcl 
+
+- name: Starting vault service
+  ansible.builtin.service:
+    name: "vault"
+    enabled: yes
+    state: restarted
+
+- name: Configuring the hostName
+  ansible.builtin.include_role:
+    name: common                 
+    tasks_from: setHostname   
