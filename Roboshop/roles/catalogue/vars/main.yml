@@ -1,0 +1,10 @@
+component: "catalogue"
+packageName: "nodejs"
+packageVersion: 20
+appUser: "roboshop"
+appDirectory: "/app"
+url: "https://stan-robotshop.s3.amazonaws.com/catalogue-v3.zip"
+setup_mongodb_schema: true
+# if you don't delcare this, mongoScheme won't work and ensure you add this for components needed mongoSchema injection.
+# at this point of time, we just have catalogue service which needs mongoSchema injection. Other services are not having any schema to be injected. So, this variable is not required for other services.
+secrets: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=kv/data/rabbitmq-{{ env }} token={{ token }} url=http://vault-tools.krrinet.online:8200 validate_certs=false') }}"
