@@ -1,0 +1,30 @@
+- name: Installing the packages for {{ component }} service
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ packages }}"
+
+# - name: Prereq packages
+#   ansible.builtin.include_role:
+#     name: common                 
+#     tasks_from: prereq-package           # name of the task file    
+
+- name: Creating user and configuring the app directory for {{ component }} service
+  ansible.builtin.include_role:
+    name: common                 
+    tasks_from: createUserAndApp           # name of the task file    
+
+- name: Install specified python requirements
+  ansible.builtin.shell: pip3 install -r requirements.txt
+  args:
+    chdir: "{{ appDirectory }}"
+
+- name: Configuring service
+  ansible.builtin.include_role:
+    name: common                 
+    tasks_from: configureSvc  
+
+- name: Configuring the hostName
+  ansible.builtin.include_role:
+    name: common                 
+    tasks_from: setHostname   
