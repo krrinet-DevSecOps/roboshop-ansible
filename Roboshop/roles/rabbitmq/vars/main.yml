@@ -1,0 +1,4 @@
+component: "rabbitmq"
+packageName: "rabbitmq-server"
+appUser: "roboshop"
+secrets: "{{ lookup('community.hashi_vault.hashi_vault', 'secret=kv/data/{{ component }}-{{ env }} token={{ token }} url=http://vault-tools.krrinet.online:8200 validate_certs=false') }}"
